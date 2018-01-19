@@ -25,7 +25,7 @@ from wtforms.fields import (StringField, PasswordField, DateField, BooleanField,
 
 
 class VideoCamera(object):
-    def get_page_urls(self, url):  # 字符串处理
+    def get_page_urls(self, url):  # read json files
         json_file = []
         response = requests.get(url)
         soup = bs4.BeautifulSoup(response.text, "html5lib")
@@ -35,7 +35,7 @@ class VideoCamera(object):
                 json_file.append(i)
         return json_file
 
-    def get_position(self, junction, frame):
+    def get_position(self, junction, frame): # get joints position
         x = []
         y = []
         for a, i in enumerate(range(frame.shape[0])):
@@ -46,7 +46,7 @@ class VideoCamera(object):
     def __init__(self, data_number):
         url = 'http://www.cadietrich.net/reports/legotracker/database/'
         json_file = self.get_page_urls(url)
-        data_num = data_number  # 输入视频号码
+        data_num = data_number        # input data number
         s = json_file[int(data_num)]
         read_json = urllib.request.urlopen(url + s)
         data = json.loads(read_json.read().decode('utf8'))
@@ -57,7 +57,7 @@ class VideoCamera(object):
         timestamp = np.array(data[u'timestamp'])
         junctions = ['left_ankle', 'left_elbow', 'left_hip', 'left_knee', 'left_shoulder', 'left_wrist',
                      'right_ankle', 'right_elbow', 'right_hip', 'right_knee', 'right_shoulder', 'right_wrist'
-                     ]  # 关节名称
+                     ]  
 
         self.left_ax, self.left_ay = self.get_position('left_ankle', frames)
         self.left_ex, self.left_ey = self.get_position('left_elbow', frames)
@@ -77,6 +77,8 @@ class VideoCamera(object):
 
         camera = cv2.VideoCapture('video.mp4')
         self.video = camera
+        
+        # joints size and color
         self._countFrame = 0
         self.color1 = (0, 0, 255)
         self.color2 = (255, 0, 0)
@@ -85,8 +87,9 @@ class VideoCamera(object):
 
     def __del__(self):
         self.video.release()
-
-    def get_frame(self):
+    
+    # add joints for each frame
+    def get_frame(self): 
         success, frame = self.video.read()
         frame1 = copy.deepcopy(frame)
         frame2 = frame
@@ -134,6 +137,7 @@ class VideoCamera(object):
         cv2.circle(frame2, (self.right_wx[self._countFrame], self.right_wy[self._countFrame]), self.center, self.color2,
                    2, self.thickness)
 
+        #output frame setting
         self._countFrame = self._countFrame + 1
         hmerge = np.hstack((frame1, frame2))
         hmerge = imutils.resize(hmerge, width=1000)
@@ -141,6 +145,7 @@ class VideoCamera(object):
         return jpeg.tobytes()
 
 
+# Select field
 class Loginform(FlaskForm):
     video_name = SelectField('Please choose video name', choices=[
         ('0', 'First'),
