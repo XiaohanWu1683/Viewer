@@ -1,0 +1,18 @@
+<html>
+  <head>
+    <title>Baseball Pose Estimation Viewer</title>
+  </head>
+  <body>
+    <h1>Baseball Pose Estimation Viewer</h1>
+
+		<form method="POST" action = "{{ url_for('index') }}">
+		{{ form.video_name.label }}: {{ form.video_name(size=1) }}
+		<input type = "submit" name = "button">
+		<br>
+		
+	</form>
+	<img src="{{ url_for('video_feed') }}">
+
+    
+  </body>
+</html>
