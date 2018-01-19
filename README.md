@@ -5,8 +5,10 @@ This is the online viewer for joints movements.
 Package requirement:
 
 OpenCV
-flask http://flask.pocoo.org/
+flask http://flask.pocoo.org/ 
+
 Werkzeug http://werkzeug.pocoo.org/
+
 WTForms https://wtforms.readthedocs.io/en/latest/
 
 Run show.py to actiavte the website. 
